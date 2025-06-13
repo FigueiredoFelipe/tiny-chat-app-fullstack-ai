@@ -15,7 +15,7 @@ This is a fullstack mini chat application built as a live coding challenge. It a
 ## 📦 Tech Stack
 
 - **Frontend:** React 18, TypeScript, Tailwind CSS, shadcn/ui, Vite
-- **Backend:** NestJS, TypeScript, ValidationPipe, DTOs
+- **Backend:** NestJS, TypeScript, ValidationPipe, DTOs, ThrottlerGuard
 - **Extras:** Docker (optional), LLM Integration (Gemini or OpenAI), Rate-limiting
 
 ---
@@ -69,6 +69,13 @@ npm nest start --watch
 { "reply": "Bot: HELLO" }
 ```
 
+### 🔐 Rate Limiting
+
+This app uses NestJS’s `ThrottlerGuard` to limit requests:
+
+- Maximum **5 requests per minute** per IP.
+- Returns `429 Too Many Requests` if exceeded.
+
 ---
 
 ## ✨ Features
@@ -78,11 +85,12 @@ npm nest start --watch
 ✅ Input clear, auto-scroll, error handling  
 ✅ DTO validation and clean API response  
 🚫 No database required (in-memory)  
+🚦 Built-in rate-limiting via `ThrottlerGuard`  
 🧪 Type-safe communication (bonus)
 
 ---
 
-## 🧠 LLM Integration (Optional)
+## 🧠 LLM Integration (In progress)
 
 You can extend this app using an LLM service like Gemini or OpenAI:
 
@@ -96,6 +104,16 @@ You can extend this app using an LLM service like Gemini or OpenAI:
 - "What’s the difference between unit and integration testing?"
 - "How do you mock a service in Jest?"
 - "Can you explain what Cypress is used for?"
+
+---
+
+### 🐳 Run with Docker (Backend Only)
+
+```bash
+# From the root
+docker build -t chat-backend ./backend
+docker run -p 3000:3000 chat-backend
+```
 
 ---
 
