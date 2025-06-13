@@ -14,9 +14,9 @@ This is a fullstack mini chat application built as a live coding challenge. It a
 
 ## 📦 Tech Stack
 
-- **Frontend:** React 18, TypeScript, Tailwind CSS, shadcn/ui, Vite  
-- **Backend:** NestJS, TypeScript, ValidationPipe, DTOs  
-- **Extras:** Docker (optional), LLM Integration (Gemini or OpenAI), Rate-limiting  
+- **Frontend:** React 18, TypeScript, Tailwind CSS, shadcn/ui, Vite
+- **Backend:** NestJS, TypeScript, ValidationPipe, DTOs
+- **Extras:** Docker (optional), LLM Integration (Gemini or OpenAI), Rate-limiting
 
 ---
 
@@ -53,7 +53,7 @@ npm run dev
 ```bash
 cd backend
 npm install
-npm run start:dev
+npm nest start --watch
 # API endpoint: POST http://localhost:3000/chat
 ```
 
@@ -78,7 +78,7 @@ npm run start:dev
 ✅ Input clear, auto-scroll, error handling  
 ✅ DTO validation and clean API response  
 🚫 No database required (in-memory)  
-🧪 Type-safe communication (bonus)  
+🧪 Type-safe communication (bonus)
 
 ---
 

@@ -31,7 +31,7 @@ export function ChatBox() {
       const res = await fetch("http://localhost:3000/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: userMessage }),
+        body: JSON.stringify({ message: userMessage }), // | **Request body** | `{ "message": "string" }` (JSON)
       });
 
       if (!res.ok) {
