@@ -1,13 +1,14 @@
 import { Body, Controller, Post } from '@nestjs/common';
+
+import { ChatService } from './chat.service';
 import { CreateChatDto } from './dto/create-chat.dto';
 
-@Controller('chat') // POST /chat
+@Controller('chat')
 export class ChatController {
+  constructor(private readonly chatService: ChatService) {}
+
   @Post()
   async handleMessage(@Body() body: CreateChatDto) {
-    const reply = `Bot: ${body.message}`;
-    // Simulate typing delay
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    return { reply };
+    return this.chatService.getReply(body.message);
   }
 }

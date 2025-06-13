@@ -1,26 +1,15 @@
 import { Injectable } from '@nestjs/common';
+
+import { LlmService } from '../llm/llm.service';
 import { CreateChatDto } from './dto/create-chat.dto';
-import { UpdateChatDto } from './dto/update-chat.dto';
 
 @Injectable()
 export class ChatService {
-  create(createChatDto: CreateChatDto) {
-    return 'This action adds a new chat';
-  }
+  constructor(private readonly llmService: LlmService) {}
 
-  findAll() {
-    return `This action returns all chat`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} chat`;
-  }
-
-  update(id: number, updateChatDto: UpdateChatDto) {
-    return `This action updates a #${id} chat`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} chat`;
+  async getReply(message: string): Promise<{ reply: string }> {
+    // Aqui você pode aplicar validações ou manipular a mensagem, se quiser
+    const reply = await this.llmService.ask(message);
+    return { reply };
   }
 }
