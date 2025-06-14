@@ -8,13 +8,14 @@ describe('ChatService', () => {
   let llmService: LlmService;
 
   beforeEach(async () => {
+    // ✅ Creates a testing module and injects a mocked LlmService
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ChatService,
         {
           provide: LlmService,
           useValue: {
-            ask: jest.fn(),
+            ask: jest.fn(), // ✅ We mock the 'ask' method for test control
           },
         },
       ],
@@ -24,11 +25,13 @@ describe('ChatService', () => {
     llmService = module.get<LlmService>(LlmService);
   });
 
+  // ✅ Ensures the service is properly instantiated
   it('should be defined', () => {
     expect(chatService).toBeDefined();
   });
 
   describe('getReply', () => {
+    // ✅ Test for valid domain-related question (feijoada)
     it('should return detailed information about Brazilian dishes', async () => {
       const question = 'What are the main ingredients of feijoada?';
       const mockResponse =
@@ -44,6 +47,7 @@ describe('ChatService', () => {
       expect(result.reply).toContain('sausage');
     });
 
+    // ✅ Test for cooking-related question (pão de queijo)
     it('should provide cooking instructions', async () => {
       const question = 'How do you make pão de queijo?';
       const mockResponse =
@@ -59,10 +63,11 @@ describe('ChatService', () => {
       expect(result.reply).toContain('baked');
     });
 
+    // ✅ Test for an out-of-domain question (physics), expecting graceful refusal
     it('should handle out-of-scope questions gracefully', async () => {
       const question = 'What’s the theory of relativity?';
       const mockResponse =
-        'Im specialized in Brazilian cuisine. I cant answer that, but feel free to ask me something food-related!';
+        "I'm specialized in Brazilian cuisine. I can't answer that, but feel free to ask me something food-related!";
 
       jest.spyOn(llmService, 'ask').mockResolvedValue(mockResponse);
 
