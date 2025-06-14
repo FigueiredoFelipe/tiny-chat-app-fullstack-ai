@@ -1,149 +1,171 @@
-# Tiny Chat App – Fullstack
+<p align="center">
+  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
+</p>
 
-This is a fullstack mini chat application built as a live coding challenge. It allows users to send messages and receive automated replies. The project is divided into a React frontend and a NestJS backend, with optional LLM integration.
-
----
-
-## 🧠 Architecture Overview
+<p align="center">A tiny fullstack chat app built with <a href="https://nestjs.com/" target="_blank">NestJS</a> and <a href="https://react.dev/" target="_blank">React</a>, featuring real-time token streaming.</p>
 
 <p align="center">
-  <img src="docs/architecture.png" alt="Chat App Diagram" width="700" />
+  <a href="https://www.npmjs.com/package/@nestjs/core"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
+  <a href="https://github.com/nestjs/nest/blob/master/LICENSE"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="License" /></a>
+  <a href="https://github.com/nestjs/nest"><img src="https://img.shields.io/github/stars/nestjs/nest.svg?style=social" alt="GitHub Stars" /></a>
 </p>
 
 ---
 
-## 📦 Tech Stack
+## 🧠 About the Project
 
-- **Frontend:** React 18, TypeScript, Tailwind CSS, shadcn/ui, Vite
-- **Backend:** NestJS, TypeScript, ValidationPipe, DTOs, ThrottlerGuard
-- **Extras:** Docker (optional), LLM Integration (Gemini or OpenAI), Rate-limiting
+This is a **live-coding-style chat application** built with:
+
+- **Backend**: NestJS + RxJS
+- **Frontend**: React 18 + Vite + Tailwind
+- **LLM integration**: via Gemini or OpenAI
+- **Bonus**: Token-by-token streaming (SSE), rate limiting, Docker support
 
 ---
 
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Node.js (v18+)
-- npm or yarn
-
-### 📂 Project Structure
+## 🗂️ Project Structure
 
 ```
-tiny-chat-app-fullstack-ai/
-├── frontend/       # React app
-├── backend/        # NestJS API
-├── docs/           # Diagram and assets
+tiny-chat-app-fullstack/
+├── backend/   # NestJS API with LLM integration
+├── frontend/  # React app with typing effect and SSE
+├── .env.example
+├── docker-compose.yml (optional)
 └── README.md
 ```
 
 ---
 
-### 🔧 Running the Frontend
+## 🚀 Getting Started
+
+### 1. Clone and install dependencies
 
 ```bash
-cd frontend
+git clone https://github.com/your-username/tiny-chat-app-fullstack.git
+cd backend
+npm install
+```
+
+### 2. Environment setup
+
+Create a `.env` file in the backend root:
+
+```env
+PORT=3000
+LLM_API_KEY=your_api_key
+LLM_MODEL=gemini-1.5-flash
+THROTTLE_TTL=60
+THROTTLE_LIMIT=5
+```
+
+> 🧪 You can test using either OpenAI or Gemini endpoints. Prompt templates are domain-specific.
+
+---
+
+## 📡 Run the Backend (NestJS)
+
+```bash
+# Development
+npm run start:dev
+```
+
+---
+
+## 💬 Run the Frontend (React)
+
+```bash
+cd ../frontend
 npm install
 npm run dev
-# Runs at: http://localhost:5173
 ```
 
-### ⚙️ Running the Backend
+Add `.env` in `/frontend` with:
 
-```bash
-cd backend
-npm install
-npm run start:dev
-# API endpoint: POST http://localhost:3000/chat
+```env
+VITE_API_URL=http://localhost:3000
 ```
 
-### 📤 Payload
+---
+
+## 💡 Features
+
+- ✅ Simple ChatBox UI (user on right, bot on left)
+- ✅ Auto-scroll and "Typing..." indicator
+- ✅ SSE Streaming with token-by-token updates
+- ✅ Handles network errors gracefully
+- ✅ Request validation via DTO + ValidationPipe
+- ✅ Rate limiting (configurable via `.env`)
+- ✅ Fully typed with TypeScript
+
+---
+
+## 🧪 Sample Questions
 
 ```json
-{ "message": "Hello" }
+[
+  {
+    "question": "Tem cenoura no Brasil?",
+    "expected": "Sim."
+  },
+  {
+    "question": "Qual a diferença entre tapioca e polvilho?",
+    "expected": "Tapioca é feita com a goma hidratada..."
+  },
+  {
+    "question": "Como preparar arroz com feijão tradicional?",
+    "expected": "Refogue alho e cebola..."
+  }
+]
 ```
-
-### 📥 Response
-
-```json
-{ "reply": "Bot: HELLO" }
-```
-
-### 🔐 Rate Limiting
-
-This app uses NestJS’s `ThrottlerGuard` to limit requests:
-
-- Maximum **5 requests per minute** per IP.
-- Returns `429 Too Many Requests` if exceeded.
 
 ---
 
-## ✨ Features
+## 🧵 Token Streaming
 
-✅ Text input, scrollable messages, and bot replies  
-✅ "Typing..." indicator while awaiting response  
-✅ Input clear, auto-scroll, error handling  
-✅ DTO validation and clean API response  
-🚫 No database required (in-memory)  
-🚦 Built-in rate-limiting via `ThrottlerGuard`  
-🧪 Type-safe communication (bonus)
+This project uses **Server-Sent Events (SSE)** for streaming LLM replies token by token. The backend returns a stream like:
+
+```ts
+return new Observable<MessageEvent>((observer) => {
+  tokens.forEach((token, i) => {
+    setTimeout(() => observer.next({ data: token }), i * 50);
+  });
+  setTimeout(() => {
+    observer.next({ data: "[[END]]" });
+    observer.complete();
+  }, tokens.length * 50 + 100);
+});
+```
 
 ---
 
-## 🧠 LLM Integration (In progress)
-
-You can extend this app using an LLM service like Gemini or OpenAI:
-
-- Forward user messages to the LLM
-- Use `process.env` for API keys
-- Restrict replies to a specific topic (e.g., front-end testing)
-- Stream responses to simulate a typing effect
-
-### 🧪 Testing
-
-This project uses Jest for testing. To run the tests:
+## 🐳 Docker Support
 
 ```bash
-# Navigate to the backend directory
-cd backend
-
-# Run all tests
-npm run test
-
-# Run tests in watch mode (auto-reload on changes)
-npm run test:watch
+# Inside /backend
+docker build -t tiny-chat-api .
+docker run -p 3000:3000 --env-file .env tiny-chat-api
 ```
-
-### 🧪 Sample Questions
-
-Here are three example prompts with expected reply patterns from the LLM:
-
-1. **Question:** What are the main ingredients of feijoada?  
-   **Expected reply (snippet):**
-
-   > Feijoada typically includes black beans, pork parts (like ears, feet, ribs), sausage, and spices such as garlic and bay leaves.
-
-2. **Question:** How do you make pão de queijo?  
-   **Expected reply (snippet):**
-
-   > Pão de queijo is made with tapioca flour, eggs, oil, and cheese (usually Minas cheese). The dough is mixed, shaped into balls, and baked.
-
-3. **Question:** What’s the theory of relativity?  
-   **Expected reply (snippet):**
-   > I'm specialized in Brazilian cuisine. I can't answer that, but feel free to ask me something food-related!
 
 ---
 
-### 🐳 Run with Docker (Backend Only)
+## 📦 Scripts
 
 ```bash
-# From the root
-docker build -t chat-backend ./backend
-docker run -p 3000:3000 chat-backend
+# Backend
+npm run start:dev        # Watch mode
+npm run test             # Unit tests
+npm run test:e2e         # e2e tests
+npm run test:cov         # Coverage
+
+# Frontend
+npm run dev              # Vite dev server
+npm run build            # Production build
 ```
 
 ---
 
-## 📄 License
+## 🧷 License
 
-MIT — free to use and modify.
+MIT © [Your Name] — Adapted from NestJS and Gemini examples.
+
+> If you find this useful, feel free to ⭐ the repo and connect with me on [LinkedIn](https://linkedin.com/in/fjnfigueiredo).
