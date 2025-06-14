@@ -108,16 +108,16 @@ VITE_API_URL=http://localhost:3000
 ```json
 [
   {
-    "question": "Tem cenoura no Brasil?",
-    "expected": "Sim."
+    "question": "Is there carrot in Brazil?",
+    "expected": "Yes."
   },
   {
-    "question": "Qual a diferença entre tapioca e polvilho?",
-    "expected": "Tapioca é feita com a goma hidratada..."
+    "question": "What is the difference between tapioca and cassava starch?",
+    "expected": "Tapioca is made with hydrated starch (goma)..."
   },
   {
-    "question": "Como preparar arroz com feijão tradicional?",
-    "expected": "Refogue alho e cebola..."
+    "question": "How do you prepare traditional rice and beans?",
+    "expected": "Sauté garlic and onion..."
   }
 ]
 ```
@@ -170,6 +170,6 @@ npm run build            # Production build
 
 ## 🧷 License
 
-MIT © [Your Name] — Adapted from NestJS and Gemini examples.
+MIT © Felipe Figueiredo — Adapted from NestJS and Gemini examples.
 
 > If you find this useful, feel free to ⭐ the repo and connect with me on [LinkedIn](https://linkedin.com/in/fjnfigueiredo).
