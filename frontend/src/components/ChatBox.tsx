@@ -30,8 +30,22 @@ export function ChatBox() {
     const newBotMsg: Message = { sender: "bot", text: "" };
     setMessages((prev) => [...prev, newBotMsg]);
 
+    const envUrl = import.meta.env.VITE_API_URL;
+
+    if (!envUrl) {
+      setMessages((prev) => [
+        ...prev.slice(0, -1),
+        {
+          sender: "bot",
+          text: "Error trying to access API. Please try again later.",
+        },
+      ]);
+      setLoading(false);
+      return;
+    }
+
     const eventSource = new EventSource(
-      `http://localhost:3000/chat/stream?message=${encodeURIComponent(userMessage)}`
+      `${envUrl}/chat/stream?message=${encodeURIComponent(userMessage)}`
     );
 
     eventSource.onmessage = (event) => {
