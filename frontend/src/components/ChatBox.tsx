@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from "react";
-import { Input } from "@/components/ui/input";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { Input } from "@/components/ui/input";
+import { useEffect, useRef, useState } from "react";
 
 type Message = {
   sender: "user" | "bot";
@@ -27,29 +27,36 @@ export function ChatBox() {
     setError("");
     setInput("");
 
-    try {
-      const res = await fetch("http://localhost:3000/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: userMessage }), // | **Request body** | `{ "message": "string" }` (JSON)
+    const newBotMsg: Message = { sender: "bot", text: "" };
+    setMessages((prev) => [...prev, newBotMsg]);
+
+    const eventSource = new EventSource(
+      `http://localhost:3000/chat/stream?message=${encodeURIComponent(userMessage)}`
+    );
+
+    eventSource.onmessage = (event) => {
+      setMessages((prev) => {
+        const updated = [...prev];
+        const last = updated[updated.length - 1];
+        if (last && last.sender === "bot") {
+          last.text += event.data;
+        }
+        return [...updated];
       });
+    };
 
-      if (!res.ok) {
-        throw new Error("Bad response");
-      }
-
-      const data: { reply: string } = await res.json();
-
-      setMessages((prev) => [...prev, { sender: "bot", text: data.reply }]);
-    } catch (err) {
-      console.error(err);
+    eventSource.onerror = () => {
       setMessages((prev) => [
-        ...prev,
+        ...prev.slice(0, -1),
         { sender: "bot", text: "Connection lost, please retry." },
       ]);
-    } finally {
       setLoading(false);
-    }
+      eventSource.close();
+    };
+
+    eventSource.onopen = () => {
+      setLoading(false);
+    };
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
