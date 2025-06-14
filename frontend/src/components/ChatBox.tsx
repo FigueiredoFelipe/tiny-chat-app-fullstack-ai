@@ -122,25 +122,29 @@ export function ChatBox() {
   return (
     <div className="max-w-md mx-auto p-4 border rounded-lg shadow bg-white flex flex-col h-[500px]">
       <div className="flex-1 overflow-y-auto space-y-2 mb-4 pr-2">
-        {/* Render all chat messages */}
-        {messages.map((msg, i) => (
-          <div
-            key={i}
-            className={`flex ${
-              msg.sender === "user" ? "justify-end" : "justify-start"
-            }`}
-          >
+        {/* Render all chat messages, skipping empty bot placeholders */}
+        {messages.map((msg, i) => {
+          if (msg.sender === "bot" && msg.text.trim() === "") return null;
+
+          return (
             <div
-              className={`px-4 py-2 rounded-lg max-w-xs ${
-                msg.sender === "user"
-                  ? "bg-blue-500 text-white"
-                  : "bg-gray-200 text-black"
+              key={i}
+              className={`flex ${
+                msg.sender === "user" ? "justify-end" : "justify-start"
               }`}
             >
-              {msg.text}
+              <div
+                className={`px-4 py-2 rounded-lg max-w-xs ${
+                  msg.sender === "user"
+                    ? "bg-blue-500 text-white"
+                    : "bg-gray-200 text-black"
+                }`}
+              >
+                {msg.text}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
 
         {/* Show "Typing..." indicator while loading */}
         {loading && (
