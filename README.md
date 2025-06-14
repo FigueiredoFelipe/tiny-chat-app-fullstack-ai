@@ -14,6 +14,10 @@
 
 ## 🧠 About the Project
 
+<p align="center">
+  <img src="docs/architecture.png" alt="Architecture Diagram" width="700" />
+</p>
+
 This is a **live-coding-style chat application** built with:
 
 - **Backend**: NestJS + RxJS
