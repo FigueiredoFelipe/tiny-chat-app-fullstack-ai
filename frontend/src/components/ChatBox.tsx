@@ -14,12 +14,10 @@ export function ChatBox() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const botMsgIndexRef = useRef<number | null>(null); // ✅ Armazena o índice da última msg do bot
 
   const sendMessage = async () => {
-    if (!input.trim()) {
-      setError("Message cannot be empty.");
-      return;
-    }
+    if (!input.trim() || loading) return;
 
     const userMessage = input;
     setMessages((prev) => [...prev, { sender: "user", text: userMessage }]);
@@ -27,14 +25,11 @@ export function ChatBox() {
     setError("");
     setInput("");
 
-    const newBotMsg: Message = { sender: "bot", text: "" };
-    setMessages((prev) => [...prev, newBotMsg]);
-
     const envUrl = import.meta.env.VITE_API_URL;
 
     if (!envUrl) {
       setMessages((prev) => [
-        ...prev.slice(0, -1),
+        ...prev,
         {
           sender: "bot",
           text: "Error trying to access API. Please try again later.",
@@ -44,26 +39,54 @@ export function ChatBox() {
       return;
     }
 
+    // ✅ Adiciona a mensagem vazia do bot e guarda o índice com ref
+    setMessages((prev) => {
+      const index = prev.length;
+      botMsgIndexRef.current = index;
+      return [...prev, { sender: "bot", text: "" }];
+    });
+
     const eventSource = new EventSource(
       `${envUrl}/chat/stream?message=${encodeURIComponent(userMessage)}`
     );
 
+    let hasCompleted = false;
+
     eventSource.onmessage = (event) => {
+      console.log("Token recebido:", event.data);
+
+      if (event.data === "[[END]]") {
+        hasCompleted = true;
+        eventSource.close();
+        return;
+      }
+
       setMessages((prev) => {
         const updated = [...prev];
-        const last = updated[updated.length - 1];
-        if (last && last.sender === "bot") {
-          last.text += event.data;
+        const index = botMsgIndexRef.current;
+        if (index !== null && updated[index]?.sender === "bot") {
+          updated[index] = {
+            ...updated[index], // <-- Corrigido: nova referência
+            text: updated[index].text + event.data,
+          };
         }
-        return [...updated];
+        return updated;
       });
     };
 
     eventSource.onerror = () => {
-      setMessages((prev) => [
-        ...prev.slice(0, -1),
-        { sender: "bot", text: "Connection lost, please retry." },
-      ]);
+      if (hasCompleted) return;
+      setMessages((prev) => {
+        const updated = [...prev];
+        const index = botMsgIndexRef.current;
+        if (index !== null) {
+          updated[index] = {
+            sender: "bot",
+            text: "Connection lost, please retry.",
+          };
+        }
+        return updated;
+      });
       setLoading(false);
       eventSource.close();
     };
@@ -74,7 +97,7 @@ export function ChatBox() {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && input.trim()) {
+    if (e.key === "Enter" && input.trim() && !loading) {
       sendMessage();
     }
   };

@@ -9,7 +9,7 @@ import {
   Query,
   Sse,
 } from '@nestjs/common';
-import { interval, map, Observable, take } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { LlmService } from '../llm/llm.service';
 import { CreateChatDto } from './dto/create-chat.dto';
@@ -35,10 +35,21 @@ export class ChatController {
     }
 
     const reply = await this.llmService.ask(message);
-    const tokens = reply.split(''); // ou .split(' ') para palavras
-    return interval(50).pipe(
-      take(tokens.length),
-      map((i) => ({ data: tokens[i] })),
-    );
+    console.log({ reply });
+    const tokens = reply.split(''); // ou .split(' ') se preferir palavra a palavra
+    console.log({ tokens });
+    return new Observable<MessageEvent>((observer) => {
+      let i = 0;
+      const intervalId = setInterval(() => {
+        if (i < tokens.length) {
+          observer.next({ data: tokens[i] });
+          i++;
+        } else {
+          clearInterval(intervalId);
+          observer.next({ data: '[[END]]' }); // ✅ Marcação de fim
+          observer.complete();
+        }
+      }, 50);
+    });
   }
 }

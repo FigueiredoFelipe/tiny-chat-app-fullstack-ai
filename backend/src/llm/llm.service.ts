@@ -45,8 +45,9 @@ export class LlmService {
         throw new Error('No valid reply from Gemini API.');
       }
 
-      console.log('API URL:', this.apiUrl);
-      console.log('API KEY:', this.apiKey);
+      // console.log('API URL:', this.apiUrl);
+      // console.log('API KEY:', this.apiKey);
+      console.log('Reply:', reply);
 
       return reply;
     } catch (error) {
