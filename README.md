@@ -53,7 +53,7 @@ npm run dev
 ```bash
 cd backend
 npm install
-npm nest start --watch
+npm run start:dev
 # API endpoint: POST http://localhost:3000/chat
 ```
 
@@ -99,11 +99,38 @@ You can extend this app using an LLM service like Gemini or OpenAI:
 - Restrict replies to a specific topic (e.g., front-end testing)
 - Stream responses to simulate a typing effect
 
-### 💬 Sample Questions
+### 🧪 Testing
 
-- "What’s the difference between unit and integration testing?"
-- "How do you mock a service in Jest?"
-- "Can you explain what Cypress is used for?"
+This project uses Jest for testing. To run the tests:
+
+```bash
+# Navigate to the backend directory
+cd backend
+
+# Run all tests
+npm run test
+
+# Run tests in watch mode (auto-reload on changes)
+npm run test:watch
+```
+
+### 🧪 Sample Questions
+
+Here are three example prompts with expected reply patterns from the LLM:
+
+1. **Question:** What are the main ingredients of feijoada?  
+   **Expected reply (snippet):**
+
+   > Feijoada typically includes black beans, pork parts (like ears, feet, ribs), sausage, and spices such as garlic and bay leaves.
+
+2. **Question:** How do you make pão de queijo?  
+   **Expected reply (snippet):**
+
+   > Pão de queijo is made with tapioca flour, eggs, oil, and cheese (usually Minas cheese). The dough is mixed, shaped into balls, and baked.
+
+3. **Question:** What’s the theory of relativity?  
+   **Expected reply (snippet):**
+   > I'm specialized in Brazilian cuisine. I can't answer that, but feel free to ask me something food-related!
 
 ---
 
