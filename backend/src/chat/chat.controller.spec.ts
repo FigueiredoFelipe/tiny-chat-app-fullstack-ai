@@ -1,27 +1,25 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ChatController } from './chat.controller';
-import { ChatService } from './chat.service';
+import { LlmService } from '../llm/llm.service';
 import { CreateChatDto } from './dto/create-chat.dto';
 
 describe('ChatController', () => {
   let controller: ChatController;
-  let service: ChatService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [ChatController],
       providers: [
         {
-          provide: ChatService,
+          provide: LlmService,
           useValue: {
-            getReply: jest.fn((message: string) => `Bot: ${message}`),
+            ask: jest.fn((message: string) => Promise.resolve(`Bot: ${message}`)),
           },
         },
       ],
     }).compile();
 
     controller = module.get<ChatController>(ChatController);
-    service = module.get<ChatService>(ChatService);
   });
 
   it('should be defined', () => {
