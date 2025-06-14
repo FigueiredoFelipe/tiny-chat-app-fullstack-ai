@@ -144,11 +144,13 @@ return new Observable<MessageEvent>((observer) => {
 
 ## 🐳 Docker Support
 
+You can run the project by running the following command at the root folder:
+
 ```bash
-# Inside /backend
-docker build -t tiny-chat-api .
-docker run -p 3000:3000 --env-file .env tiny-chat-api
+docker compose up
 ```
+
+!! ## IMPORTANT: Make sure you have the .env file in the backend folder.
 
 ---
 
