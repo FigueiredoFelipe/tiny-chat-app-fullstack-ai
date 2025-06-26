@@ -12,6 +12,18 @@
 
 ---
 
+## 🎥 Demo Video
+
+<p align="center">
+  <a href="https://youtu.be/OGm4u-IeRfM" target="_blank">
+    <img src="https://img.youtube.com/vi/OGm4u-IeRfM/0.jpg" alt="Watch Demo Video" width="700"/>
+  </a>
+</p>
+
+> 📽️ Click the image above to watch the app in action.
+
+---
+
 ## 🧠 About the Project
 
 <p align="center">
