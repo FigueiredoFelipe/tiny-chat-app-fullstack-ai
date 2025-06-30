@@ -1,3 +1,7 @@
+// This is an end-to-end (e2e) test that checks if the root '/' route responds correctly.
+// Expected output is HTTP 200 with the body "Hello World!".
+// Kept for minimal test coverage and daily activity tracking on GitHub.
+
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
